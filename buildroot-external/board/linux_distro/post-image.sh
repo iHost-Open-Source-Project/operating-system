@@ -5,14 +5,15 @@ set -e
 BOARD_DIR="$(dirname $0)"
  
 . ${BR2_EXTERNAL_LINUX_DISTRO_PATH}/scripts/common.sh
+. ${BR2_EXTERNAL_LINUX_DISTRO_PATH}/scripts/fitimage.sh
  
 if [ -e "${BOARD_DIR}/meta" ];then
     source_meta ${BOARD_DIR}/meta
 fi
 
-# copy zboot.img to BINARIES_DIR temporary
-cp ${BOARD_DIR}/zboot.img ${BINARIES_DIR}/zboot.img
-
+# compile kernel zboot.img
+cp ${BUILD_DIR}/rockchip-rkbin-b4558da0860ca48bf1a571dd33ccba580b9abe23/tools/mkimage ${BINARIES_DIR}/
+fitimage "${BINARIES_DIR}/zboot.img" "${BOARD_DIR}/boot.its" "${BINARIES_DIR}/zImage" "${BINARIES_DIR}/rv1126-ihost.dtb"
 
 trap 'rm -rf "${ROOTPATH_TMP}"' EXIT
 ROOTPATH_TMP="$(mktemp -d)"

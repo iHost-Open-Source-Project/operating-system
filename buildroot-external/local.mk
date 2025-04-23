@@ -1,0 +1,1 @@
+LINUX_OVERRIDE_SRCDIR = /home/peter/workspace_external/projects/cube/temp/linux-rockchip

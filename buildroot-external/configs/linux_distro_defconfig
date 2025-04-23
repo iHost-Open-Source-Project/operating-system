@@ -1,61 +1,26 @@
 BR2_arm=y
 BR2_cortex_a7=y
 BR2_ARM_FPU_NEON_VFPV4=y
-BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_6_6=y
+BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_6_1=y
+BR2_PACKAGE_OVERRIDE_FILE="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/local.mk"
 BR2_INIT_SYSTEMD=y
 BR2_TARGET_GENERIC_ROOT_PASSWD="root"
+BR2_SYSTEM_DEFAULT_PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 BR2_ROOTFS_POST_BUILD_SCRIPT="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/board/linux_distro/post-build.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/board/linux_distro/post-image.sh"
 BR2_LINUX_KERNEL=y
-BR2_LINUX_KERNEL_CUSTOM_VERSION=y
-BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE="6.6.84"
-# BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG=y
-# BR2_LINUX_KERNEL_NEEDS_HOST_OPENSSL=y
-# BR2_LINUX_KERNEL_NEEDS_HOST_LIBELF=y
-
-
-# 启用从 Git 仓库拉取内核源码git 
 BR2_LINUX_KERNEL_CUSTOM_GIT=y
-
-# 从 Git 仓库拉取6.12内核
-# BR2_LINUX_KERNEL_CUSTOM_REPO_URL="https://github.com/Mrz-creator/my-kernel-repo.git"
-# BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="develop"
-
-# 从 Git 仓库拉取6.6.84内核
-BR2_LINUX_KERNEL_CUSTOM_REPO_URL="https://github.com/Mrz-creator/my-kernel-6.6.git"
-BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="feature_sonoff"
-# BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="feature_merge_6.1.99"
-
-# 从 Git 仓库拉取rk官方6.1.99内核
-# BR2_LINUX_KERNEL_CUSTOM_REPO_URL="https://github.com/armbian/linux-rockchip.git"
-# BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="rk-6.1-rkr5"
-
-# 使用自定义配置文件
+BR2_LINUX_KERNEL_CUSTOM_REPO_URL="https://github.com/Mrz-creator/linux-rockchip.git"
+BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION="feature_ihost"
 BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
-
-#rk官方6.1.99内核配置
-# BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/boards/linux_distro/rv1126_defconfig.config"
-#ha内核配置
-BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/boards/linux_distro/kernel-rockchip.config"
-
-# 配置片段合并
-#ihost配置
-# BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support-pci.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support-wireless-pci.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support-wireless.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/docker.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-network.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-debugger.config"
-#ha内核配置
-BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/hassos.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/docker.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/haconfig/device-support-wireless.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/boards/linux_distro/kernel.config"
-
-
-# 设备树支持
-BR2_LINUX_KERNEL_DTS_SUPPORT=y
-
-# BR2_LINUX_KERNEL_INTREE_DTS_NAME="rv1126-ihost"
-# BR2_LINUX_KERNEL_INTREE_DTS_NAME="rockchip/rv1126-ihost"
-BR2_LINUX_KERNEL_INTREE_DTS_NAME="rockchip/rv1126-sonoff-ihost rockchip/rv1109-sonoff-ihost"
-
-# 压缩算法和其他依赖
+BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/board/linux_distro/rv1126_defconfig.config"
+BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="$(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-debugger.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-docker.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-ipset.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-ipv6.config $(BR2_EXTERNAL_LINUX_DISTRO_PATH)/kernel/ihostconfig/rv1126-network.config"
 BR2_LINUX_KERNEL_LZ4=y
+BR2_LINUX_KERNEL_DTS_SUPPORT=y
+BR2_LINUX_KERNEL_INTREE_DTS_NAME="rv1126-ihost"
 BR2_LINUX_KERNEL_NEEDS_HOST_OPENSSL=y
 BR2_LINUX_KERNEL_NEEDS_HOST_LIBELF=y
+BR2_PACKAGE_ROCKCHIP_RKBIN=y
 BR2_PACKAGE_DROPBEAR=y
 BR2_PACKAGE_NETWORK_MANAGER=y
 BR2_PACKAGE_NETWORK_MANAGER_CLI=y
