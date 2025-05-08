@@ -1,0 +1,16 @@
+[Unit]
+Description=Linux Distro bootloader partition
+DefaultDependencies=no
+Before=umount.target local-fs.target
+Conflicts=umount.target
+After=systemd-fsck@dev-disk-by\x2dpartlabel-linux\x2ddistro\x2dos\x2dbootloader.service
+Wants=systemd-fsck@dev-disk-by\x2dpartlabel-linux\x2ddistro\x2dos\x2dbootloader.service
+
+[Mount]
+What=/dev/disk/by-partlabel/linux-distro-os-bootloader
+Where=/bootloader
+Type=auto
+Options=sync,rw
+
+[Install]
+WantedBy=local-fs.target

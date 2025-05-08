@@ -1,5 +1,4 @@
-IMAGE_NAME=linux-distro
-GENIMAGE_CFG=genimage.cfg
+IMAGE_NAME=ihost-linux-distro
 DISK_SIZE=512M
 PART_ROOTFS_SIZE=128M
 ROOTFS_IMAGE=rootfs.ext2
