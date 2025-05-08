@@ -3,11 +3,11 @@ Description=Linux Distro bootloader partition
 DefaultDependencies=no
 Before=umount.target local-fs.target
 Conflicts=umount.target
-After=systemd-fsck@dev-disk-by\x2dpartlabel-linux\x2ddistro\x2dos\x2dbootloader.service
-Wants=systemd-fsck@dev-disk-by\x2dpartlabel-linux\x2ddistro\x2dos\x2dbootloader.service
+After=systemd-fsck@dev-disk-by\x2dlabel-bootloader.service
+Wants=systemd-fsck@dev-disk-by\x2dlabel-bootloader.service
 
 [Mount]
-What=/dev/disk/by-partlabel/linux-distro-os-bootloader
+What=/dev/disk/by-label/bootloader
 Where=/bootloader
 Type=auto
 Options=sync,rw

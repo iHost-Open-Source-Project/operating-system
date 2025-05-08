@@ -1,7 +1,7 @@
 echo "iHost Linux Distro booting ......."
 
 mmc dev ${devnum}
-part start mmc ${devnum} linux-distro-os-bootstate mmc_env
+part start mmc ${devnum} bootstate mmc_env
 
 setenv loadbootstate " \
     echo 'loading env...'; \
@@ -29,14 +29,14 @@ for BOOT_SLOT in "${BOOT_ORDER}"; do
     if test ${BOOT_A_LEFT} -gt 0; then
       setexpr BOOT_A_LEFT ${BOOT_A_LEFT} - 1
       echo "Trying to boot slot A, ${BOOT_A_LEFT} attempts remaining."
-      setenv kernel_part linux-distro-os-kernel0 
+      setenv kernel_part kernel0 
       setenv bootargs "${bootargs_a} rauc.slot=A"
     fi
   elif test "x${BOOT_SLOT}" = "xB"; then
     if test ${BOOT_B_LEFT} -gt 0; then
       setexpr BOOT_B_LEFT ${BOOT_B_LEFT} - 1
       echo "Trying to boot slot B, ${BOOT_B_LEFT} attempts remaining."
-      setenv kernel_part linux-distro-os-kernel1 
+      setenv kernel_part kernel1 
       setenv bootargs "${bootargs_b} rauc.slot=B"
     fi
   fi
