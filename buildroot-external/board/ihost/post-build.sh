@@ -12,3 +12,5 @@ if [ -e "${BOARD_DIR}/meta" ];then
 fi
 
 fillup_rauc_system_conf
+
+install_cert

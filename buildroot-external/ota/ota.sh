@@ -22,6 +22,15 @@ function fillup_rauc_system_conf() {
     fi
 }
 
+function install_cert() {
+    if [[ ! -e ${OTA_DIR}/cert.pem ]]; then
+        echo "${OTA_DIR}/cert.pem is not exist"
+        exit 1;
+    fi
+    mkdir -p ${TARGET_DIR}/etc/rauc/
+    cp ${OTA_DIR}/cert.pem ${TARGET_DIR}/etc/rauc/keyring.pem
+}
+
 function gen_bundle() {
     export RAUC_MANIFEST=$(cat ${OTA_DIR}/manifest)
     trap 'rm -rf "${ROOTPATH_TMP}"' EXIT
