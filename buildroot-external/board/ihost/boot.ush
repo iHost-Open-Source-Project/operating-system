@@ -62,9 +62,15 @@ fi
 # boot_fit ${bootimg_addr_r}
 
 # boot a Linux kernel in ‘zImage’ format
+echo "Detected SoC RV${cpucode#}"
+if test "x${cpucode#}" = "x1126"; then
+  setenv fdtfile rv1126-sonoff-ihost.dtb
+else
+  setenv fdtfile rv1109-sonoff-ihost.dtb
+fi
 part number mmc ${devnum} bootloader boot_partnum
-echo "load fdt from bootloader partition"
-fatload mmc ${devnum}:${boot_partnum} ${fdt_addr_r} rv1109-sonoff-ihost.dtb
+echo "load ${fdtfile} from bootloader partition"
+fatload mmc ${devnum}:${boot_partnum} ${fdt_addr_r} ${fdtfile}
 part number mmc ${devnum} ${kernel_part} kernel_partnum
 echo "load zImage from ${kernel_part} partition"
 load mmc ${devnum}:${kernel_partnum} ${kernel_addr_r} zImage
