@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+eval "$(rauc status --output-format=shell)"
+
+if [ -z "${RAUC_SYSTEM_BOOTED_BOOTNAME}" ]; then
+    echo "[ERROR] RAUC_SYSTEM_BOOTED_BOOTNAME is empty"
+    exit 1
+fi
+
+CURRENT_SLOT_ID=$(test "${RAUC_SYSTEM_BOOTED_BOOTNAME}" = "A" && echo 0 || echo 1);
+
+CURRENT_SLOT_NAME="kernel.${CURRENT_SLOT_ID}"
+
+if [ $RAUC_BOOT_PRIMARY == $CURRENT_SLOT_NAME ]; then
+    echo "rauc_boot_primary_solt is equal rauc_current_booted_solt ...";
+    rauc status mark-active $CURRENT_SLOT_NAME;
+    rauc status mark-good $CURRENT_SLOT_NAME;
+fi

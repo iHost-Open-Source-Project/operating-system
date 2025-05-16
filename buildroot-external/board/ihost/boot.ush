@@ -1,0 +1,82 @@
+echo "iHost Linux Distro booting ......."
+
+mmc dev ${devnum}
+part start mmc ${devnum} bootstate mmc_env
+
+setenv loadbootstate " \
+    echo 'loading env...'; \
+    mmc read ${ramdisk_addr_r} ${mmc_env} 0x40; \
+    env import -c ${ramdisk_addr_r} 0x8000;"
+
+setenv storebootstate " \
+    echo 'storing env...'; \
+    env export -c -s 0x8000 ${ramdisk_addr_r} BOOT_ORDER BOOT_A_LEFT BOOT_B_LEFT; \
+    mmc write ${ramdisk_addr_r} ${mmc_env} 0x40;"
+
+run loadbootstate
+test -n "${BOOT_ORDER}" || setenv BOOT_ORDER "A B"
+test -n "${BOOT_A_LEFT}" || setenv BOOT_A_LEFT 3
+test -n "${BOOT_B_LEFT}" || setenv BOOT_B_LEFT 3
+
+setenv bootargs_a "root=PARTUUID=8d3d53e3-6d49-4c38-8349-aff6859e82fd rootwait ro"
+setenv bootargs_b "root=PARTUUID=a3ec664e-32ce-4665-95ea-7ae90ce9aa20 rootwait ro"
+
+setenv bootargs
+for BOOT_SLOT in "${BOOT_ORDER}"; do
+  if test "x${bootargs}" != "x"; then
+    # skip remaining slots
+  elif test "x${BOOT_SLOT}" = "xA"; then
+    if test ${BOOT_A_LEFT} -gt 0; then
+      setexpr BOOT_A_LEFT ${BOOT_A_LEFT} - 1
+      echo "Trying to boot slot A, ${BOOT_A_LEFT} attempts remaining."
+      setenv kernel_part kernel0 
+      setenv bootargs "${bootargs_a} rauc.slot=A"
+    fi
+  elif test "x${BOOT_SLOT}" = "xB"; then
+    if test ${BOOT_B_LEFT} -gt 0; then
+      setexpr BOOT_B_LEFT ${BOOT_B_LEFT} - 1
+      echo "Trying to boot slot B, ${BOOT_B_LEFT} attempts remaining."
+      setenv kernel_part kernel1 
+      setenv bootargs "${bootargs_b} rauc.slot=B"
+    fi
+  fi
+done
+
+if test -n "${bootargs}"; then
+  run storebootstate
+else
+  echo "No valid slot found, resetting tries to 3"
+  setenv BOOT_A_LEFT 3
+  setenv BOOT_B_LEFT 3
+  run storebootstate
+  reset
+fi
+
+# FIT KERNEL Image boot
+# echo "Starting kernel..."
+# setenv bootimg_addr_r 0x08648000
+# part start mmc ${devnum} ${kernel_part} kernel_start
+# part size mmc ${devnum} ${kernel_part} kernel_size
+# echo "${kernel_part} reading from mmc${devnum}, start: ${kernel_start}, size: ${kernel_size}, and loading to ${bootimg_addr_r}"
+# mmc read ${bootimg_addr_r} ${kernel_start} ${kernel_size}
+# boot_fit ${bootimg_addr_r}
+
+# boot a Linux kernel in ‘zImage’ format
+echo "Detected SoC RV${cpucode#}"
+if test "x${cpucode#}" = "x1126"; then
+  setenv fdtfile rv1126-sonoff-ihost.dtb
+else
+  setenv fdtfile rv1109-sonoff-ihost.dtb
+fi
+part number mmc ${devnum} bootloader boot_partnum
+echo "load ${fdtfile} from bootloader partition"
+fatload mmc ${devnum}:${boot_partnum} ${fdt_addr_r} ${fdtfile}
+part number mmc ${devnum} ${kernel_part} kernel_partnum
+echo "load zImage from ${kernel_part} partition"
+load mmc ${devnum}:${kernel_partnum} ${kernel_addr_r} zImage
+echo "Starting kernel..."
+bootz ${kernel_addr_r} - ${fdt_addr_r}
+
+
+echo "Boot failed, resetting..."
+reset
