@@ -1,0 +1,18 @@
+[Unit]
+Description=Linux Distro data partition
+Wants=os-expand.service
+DefaultDependencies=no
+After=os-expand.service
+Before=umount.target local-fs.target
+Conflicts=umount.target
+After=systemd-fsck@dev-disk-by\x2dlabel-data.service
+Wants=systemd-fsck@dev-disk-by\x2dlabel-data.service systemd-growfs@data.service
+
+[Mount]
+What=/dev/disk/by-label/data
+Where=/data
+Type=ext4
+Options=commit=3
+
+[Install]
+WantedBy=local-fs.target

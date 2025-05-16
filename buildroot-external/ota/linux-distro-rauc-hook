@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -o errexit
+
+# shellcheck disable=SC2317  # Being usesd in trap which shellcheck can't follow
+cleanup_boot() {
+    umount "${BOOT_NEW}"
+    rm -rf "${BOOT_TMP}" "${BOOT_NEW}"
+}
+
+install_boot() {
+    BOOT_TMP=/tmp/bootloader-tmp
+    BOOT_NEW=/tmp/bootloader-new
+    BOOT_DIR=/bootloader
+
+    mkdir -p "${BOOT_TMP}"
+    mkdir -p "${BOOT_NEW}"
+
+     # Mount boot
+    if ! systemctl -q is-active bootloader.mount; then
+        systemctl start bootloader.mount
+    fi
+    mount "${RAUC_IMAGE_NAME}" "${BOOT_NEW}"
+    trap cleanup_boot EXIT
+
+    # Update
+    cp -rf "${BOOT_NEW}"/* "${BOOT_DIR}/"
+}
+
+
+##
+# Hooks
+
+case "$1" in
+     install-check)
+         if [ "$RAUC_MF_COMPATIBLE" = "$RAUC_SYSTEM_COMPATIBLE" ]; then
+             exit 0
+         fi
+         echo "Compatible does not match!" 1>&2
+         exit 10
+         ;;
+    slot-install)
+        if [ "${RAUC_SLOT_CLASS}" = "bootloader" ]; then
+            install_boot
+        else 
+            echo "slot-install-hook execute failed "
+            exit 1
+        fi
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+exit 0
