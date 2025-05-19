@@ -1,0 +1,1 @@
+ihost ALL=(ALL) NOPASSWD:ALL

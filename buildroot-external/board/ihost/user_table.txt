@@ -1,0 +1,1 @@
+ihost -2 ihost -2 =ihost /home/ihost /bin/bash sudo,wheel
