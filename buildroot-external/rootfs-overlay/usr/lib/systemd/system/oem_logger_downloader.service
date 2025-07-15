@@ -1,0 +1,12 @@
+[Unit]
+Description=oem logger downloader service
+After=network.target emmc-oem.mount
+
+[Service]
+Type=simple
+Environment="LOG_DIR=/emmc/oem/.logs"
+ExecStart=/usr/bin/node /home/root/server.js & 
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

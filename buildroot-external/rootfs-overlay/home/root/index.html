@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Log Archive Download - SONOFF iHost</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: #f6f8fa;
+      min-height: 100vh;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+    }
+    .wrap {
+      width: 850px; min-height: 540px;
+      background: #fff;
+      display: flex;
+      border-radius: 28px;
+      box-shadow: 0 8px 40px #007aff25;
+      overflow: hidden;
+    }
+    .left {
+      width:60%;
+      min-height: 540px;
+      background: url('/bg.png') center center no-repeat;
+      background-size: cover;
+      border-top-left-radius: 28px;
+      border-bottom-left-radius: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+    .right {
+      width: 54%; display: flex; align-items: center; justify-content: center;
+      padding: 0 36px;
+    }
+    .card {
+      width: 100%; max-width: 330px;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 0;
+    }
+    .title {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-bottom: 38px;
+      color: #1b253a;
+      text-align: left;
+    }
+    button {
+      width: 100%; padding: 0.9em 0; border-radius: 9px;
+      background: #007aff; color: #fff; font-size: 1.15em; border: none;
+      font-weight: 600; cursor: pointer;
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+      box-shadow: 0 3px 18px #007aff22;
+      transition: background .16s;
+    }
+    button:disabled { background: #a0bfff; cursor: not-allowed;}
+    .msg { color: #d33; font-size: 1em; min-height: 2em; text-align: center; margin-top: 0.5em; }
+    .msg.ok { color: #059c21;}
+    @media (max-width: 900px) {
+      .wrap { flex-direction: column; width: 96vw; min-width: 0;}
+      .left, .right { width: 100%; }
+      .right { padding: 24px; }
+      .left { min-height: 200px; background-size: cover; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="left"></div>
+    <div class="right">
+      <div class="card">
+        <div class="title">Log Archive Download</div>
+        <button id="dlBtn">Download Log Archive</button>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const dlBtn = document.getElementById('dlBtn');
+    const msg = document.getElementById('msg');
+    dlBtn.onclick = function () {
+      dlBtn.disabled = true;
+      msg.textContent = "Archiving logs, please wait...";
+      msg.className = "msg";
+      fetch('/download', { method: 'POST' })
+      .then(async res => {
+        if (!res.ok) {
+          msg.textContent = await res.text() || "Failed to download logs";
+          msg.className = "msg";
+          dlBtn.disabled = false;
+          return;
+        }
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'logs.tar.gz';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+        msg.textContent = "Download completed!";
+        msg.className = "msg ok";
+        dlBtn.disabled = false;
+      })
+      .catch(e => {
+        msg.textContent = "Failed to download logs";
+        msg.className = "msg";
+        dlBtn.disabled = false;
+      });
+    };
+  </script>
+</body>
+</html>
