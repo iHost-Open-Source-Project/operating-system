@@ -4,6 +4,16 @@ if [ -f /overlay/wifi.json ]; then
     ssid=$(jq -r '.ssid' /overlay/wifi.json)
     password=$(jq -r '.password' /overlay/wifi.json)
     if [ -n "$ssid" ] && [ -n "$password" ]; then
+        current_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2)
+        if [ -n "$current_ssid" ]; then
+            echo "current connected wifi: $current_ssid, disconnect it"
+            nmcli con down id "$current_ssid"
+            nmcli con delete "$current_ssid"
+        fi
+        if ! nmcli dev wifi connect "$ssid" password "$password"; then
+            echo "can't connect to wifi, please check ssid and password"
+            exit 1
+        fi
         mkdir -p /emmc/oem/cfg
         if [ -f /emmc/oem/cfg/wpa_supplicant.conf ]; then
             echo "wpa_supplicant.conf already exists, update it"
