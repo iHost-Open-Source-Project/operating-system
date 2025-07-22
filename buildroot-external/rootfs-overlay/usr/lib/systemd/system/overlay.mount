@@ -1,0 +1,14 @@
+[Unit]
+Description=Linux Distro overlay partition
+DefaultDependencies=no
+Before=umount.target local-fs.target
+Conflicts=umount.target
+
+[Mount]
+What=/dev/disk/by-label/overlay
+Where=/overlay
+Type=auto
+Options=sync,rw
+
+[Install]
+WantedBy=local-fs.target
