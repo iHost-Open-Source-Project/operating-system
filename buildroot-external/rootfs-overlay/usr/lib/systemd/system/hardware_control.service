@@ -1,0 +1,11 @@
+[Unit]
+Description=hardware control service
+After=mosquitto.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/hardware_control
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
