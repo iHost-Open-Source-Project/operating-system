@@ -1,11 +1,10 @@
 [Unit]
 Description=oem logger downloader service
-After=network.target emmc-oem.mount
+After=network.target
 
 [Service]
 Type=simple
-Environment="LOG_DIR=/emmc/oem/.logs"
-ExecStart=/usr/bin/node /home/root/server.js & 
+ExecStart=/usr/bin/node /home/root/ihost-logger-downloader/server.js & 
 Restart=on-failure
 
 [Install]
