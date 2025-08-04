@@ -1,0 +1,12 @@
+[Unit]
+Description=Linux Distro emmc rootfs partition
+DefaultDependencies=no
+Before=umount.target local-fs.target
+Conflicts=umount.target
+
+[Mount]
+What=/dev/mmcblk0p6
+Where=/emmc/rootfs
+
+[Install]
+WantedBy=local-fs.target

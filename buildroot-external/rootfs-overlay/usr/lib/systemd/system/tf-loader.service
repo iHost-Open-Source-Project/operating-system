@@ -1,0 +1,11 @@
+[Unit]
+Description=tf loader service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /home/root/ihost-tf-loader/index.js & 
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
